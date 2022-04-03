@@ -1,119 +1,151 @@
-import asyncHandler from "express-async-handler";
-import generateToken from "../utils/generateToken.js";
-import User from '../models/UserModel.js'
+// import catchAsync from "../utils/catchAsync.js";
+import User from "../models/UserModel.js";
+import generateToken from "../utils/generateToken.js"
 
-// @desc     Auth user & get token
-// @route    POST /api/users/login
-// @access   Public
 
-const authUsers = asyncHandler(async(req, res) => {
-    const {email, password} = req.body
-    const user = await User.findOne({email})
-    if(user && (await user.matchPassword(password))){
-        res.status(200).json({
-            status: 'success',
-            message: 'Login succesfull',
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                isAdmin: user.isAdmin,
-                token: generateToken(user._id)
-            }
+// REGISTER 
+const registerUser = async(req, res) => {
+
+    const {name, email, password} = req.body
+   
+    const existingUser = await User.findOne({email})
+    if(existingUser){
+       return res.status(404).json({
+            message: "user already exist"
         })
-        
     }
-    else{
-        res.status(401)
-        throw new Error('Invalid email or password')
-    }
-})
-
-// @desc     Auth user & get token
-// @route    POST /api/users/create
-// @access   Public
-
-const createUser = asyncHandler(async(req, res) => {
-    const {name, email, password} = req.body;
-
-    const checkUserExistence =  await User.findOne({email})
-
-    if(checkUserExistence){
-        res.status(400)
-        throw new Error('User already exist')
-    }
-    const user = await User.create({
-        name, email, password
+    const newUser = new User({
+        name: name,
+        email: email,
+        password: password,
     })
-    if(user){
-        res.status(201).json({
-            status: 'success',
-            message: 'User created',
-            data:{
+    try {
+        const savedUser = await newUser.save()
+        return res.status(200).json({
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            isAdmin: newUser.isAdmin,
+            token: generateToken(newUser._id, newUser.isAdmin)
+        })
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+// LOGIN
+const loginUser = async(req, res) => {
+    try {
+        const {email, password} = req.body
+        const user = await User.findOne({email})
+        if(user && (await user.matchPassword(password))){
+            return res.status(200).json({
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                isAdmin: user.isAdmin,
-                token: generateToken(user._id)
-            }
-        })
-    }else{
-        res.status(404)
-        throw new Error('Invalid user data')
+                isAdmin : user.isAdmin,
+                token: generateToken(user._id, user.isAdmin)
+            })
+        }
+        res.status(401).json('Wrong credentials')
+    } catch (error) {
+        res.status(500).json(error)
     }
-})
-// @desc     Auth user profile
-// @route    GET /api/users/profile
-// @access   Private
+}
 
-const getUserProfile = asyncHandler(async(req, res)=>{
-    const user = await User.findById(req.user._id);
-  
-    if(user){
-        res.status(200).json({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          isAdmin: user.isAdmin,
-        })
-    }else{
-        res.status(404)
-        throw new Error('User not found')
+// UPDATE USER
+
+const updateUser = async(req, res) => {
+  try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
+       return res.status(200).json({
+        updatedUser
+       })
+    } catch (error) {
+       return res.status(500).json(error)
     }
-  })
+}
+
+// DELETE USER
+const deleteUser = async(req, res)=>{
+try {
+    await User.findByIdAndDelete(req.params.id)
+    res.status(200).send('User has been deleted!')
+} catch (error) {
+    return res.status(500).json(error)
+}
+}
 
 
-  // @desc     Auth user profile
-// @route    PUT /api/users/profile
-// @access   Private
-
-const updateUserProfile = asyncHandler(async(req, res)=>{
-    const user = await User.findById(req.user._id);
-  
+// GET single user
+const getUser = async(req, res) => {
+try {
+    const user = await User.findById(req.params.id)
     if(user){
+        const {password, ...others} = user._doc;
+       return res.status(200).json({...others})
+    }else{
+    return res.status(404).json("User not found!")
+    }
+   
+} catch (error) {
+    res.status(500).json(error)
+}
+}
+
+// GET ALL USERS
+
+const getAllUsers = async(req, res) => {
+    const query = req.query.new;
+    try {
+        const users = query ? await User.find().sort({_id : -1}).limit(10) : await User.find()
+
+        if(users) {
+            return res.status(200).json(users)
+        }else{
+            return res.status(404).json("Users not found")
+        }
         
-          user.name= req.body.name || user.name
-          user.email =  req.body.email || user.email
-          if(req.body.password){
-              user.password = req.body.password
-          }
-          const updatedUser = await user.save()
-          res.status(200).json({
-            _id: updatedUser._id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            isAdmin: updatedUser.isAdmin,
-            token: generateToken(updatedUser._id)
-        })
-    }else{
-        res.status(404)
-        throw new Error('User not found')
+    } catch (error) {
+        res.status(500).json(error)
     }
-  })
+}
+
+// GET USER STATS
+
+const userStats = async(req, res) => {
+    const date = new Date()
+    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+    try {
+        const userStatsData = await User.aggregate([
+            {$match: {createdAt: { $gte: lastYear } } },
+            {
+                $project: {
+                    month: {$month: "$createdAt"},
+                },
+            },
+            {
+                $group: {
+                    _id: "$month",
+                    total: {$sum: 1}
+                }
+            }
+        ]);
+
+        res.status(200).json(userStatsData)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 
 export{
-    authUsers,
-    createUser,
-    getUserProfile,
-    updateUserProfile
+    registerUser,
+    loginUser,
+    updateUser,
+    deleteUser,
+    getUser,
+    getAllUsers,
+    userStats
 }
