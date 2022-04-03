@@ -8,13 +8,14 @@ const userSchema = Schema(
     {
         name:{
             type: String,
-            required: true,
+            required: [true, 'Please tell us your name!'],
         },
         email: {
             type: String,
-            required: true,
+            required: [true, 'Please provide your email'],
             unique: true,
-        },
+            lowercase: true,
+          },
         password: {
             type: String,
             required: true,
@@ -38,7 +39,7 @@ userSchema.pre('save', async function(next) {
     if(!this.isModified('password')){
         next()
     }
-    const salt = await bcrypt.genSalt(10)
+    const salt = await bcrypt.genSalt(12)
 
     this.password = await bcrypt.hash(this.password, salt)
 })

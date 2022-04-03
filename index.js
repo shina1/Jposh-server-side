@@ -1,10 +1,10 @@
 import express from "express";
 import connectDB from "./connect/db.js";
 import dotenv from 'dotenv';
-import usersRoutes from "./routes/usersRoutes.js"
-
-
-
+import usersRoutes from "./routes/user.js"
+import auth from "./routes/auth.js"
+import productRoute from "./routes/productRoute.js"
+import cartRoute from "./routes/cartRoute.js"
 
 
 dotenv.config();
@@ -12,14 +12,22 @@ dotenv.config();
 const app = express()
 
 app.use(express.json())
-
-app.use("/api/v1/users", usersRoutes)
-
-
 connectDB()
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+// user endpoints
+app.use("/api/v1/users", usersRoutes)
+app.use("/api/v1/auth", auth)
+
+// product endpoints
+app.use("/api/v1/products", productRoute)
+
+// cart endpoints
+app.use("/api/v1/cart", cartRoute)
+
+
+
+// app.get("/", (req, res) => {
+//   res.send("API is running...");
+// });
 const PORT = process.env.PORT || 2600
 
 app.listen(
