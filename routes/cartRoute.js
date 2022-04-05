@@ -1,6 +1,6 @@
 import express from "express";
-import { createUserCart, deleteCart, getAllCart, getUserCart, updateCart } from "../controllers/cartController";
-import { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } from "../middleware/authMiddleware";
+import { createUserCart, deleteCart, getAllCart, getUserCart, updateCart } from "../controllers/cartController.js";
+import { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } from "../middleware/authMiddleware.js";
 
 
 

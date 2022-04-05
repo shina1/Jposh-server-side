@@ -5,6 +5,7 @@ import usersRoutes from "./routes/user.js"
 import auth from "./routes/auth.js"
 import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
+import orderRoute from "./routes/orderRoutes.js"
 
 
 dotenv.config();
@@ -22,6 +23,10 @@ app.use("/api/v1/products", productRoute)
 
 // cart endpoints
 app.use("/api/v1/cart", cartRoute)
+
+// order endpoint
+
+app.use("/api/v1/order", orderRoute)
 
 
 
