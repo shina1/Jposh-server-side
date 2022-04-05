@@ -1,4 +1,5 @@
 // import catchAsync from "../utils/catchAsync.js";
+import asyncHandler from "express-async-handler";
 import User from "../models/UserModel.js";
 import generateToken from "../utils/generateToken.js"
 
@@ -52,6 +53,7 @@ const loginUser = async(req, res) => {
         res.status(500).json(error)
     }
 }
+
 
 // UPDATE USER
 
