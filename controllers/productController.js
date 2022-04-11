@@ -40,7 +40,7 @@ const deleteProduct = async(req, res) => {
     }
 }
 
-// GET single user
+// GET single product
 const getProduct = async(req, res) => {
     try {
         const product = await Products.findById(req.params.id)
@@ -50,7 +50,7 @@ const getProduct = async(req, res) => {
 
         }else{
 
-        return res.status(404).json("User not found!")
+        return res.status(404).json("Product not found!")
 
         }
        
@@ -70,8 +70,8 @@ const getAllProducts = async(req, res) => {
             products = await Products.find().sort({ createdAt: -1}).limit(10);
         }else if(queryCat){
             products = await Products.find({
-                categories : {
-                    $in: [ queryCat ],
+                category : {
+                    $eq:  queryCat ,
                 },
             })
         }else{
@@ -88,10 +88,25 @@ const getAllProducts = async(req, res) => {
     }
 }
 
+// GET PORPULAR PRODUCTS
+const getPorpularProducts = async(req, res) => {
+    try {
+        const porpularProducts = await Products.find().sort({ createdAt: -1}).limit(6);
+        if(porpularProducts) {
+            return res.status(200).json(porpularProducts)
+        }else{
+            return res.status(404).json("Products not found")
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 export {
     createProduct,
     editProduct,
     deleteProduct,
     getProduct,
-    getAllProducts
+    getAllProducts,
+    getPorpularProducts
 }

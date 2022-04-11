@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct, deleteProduct, editProduct, getAllProducts, getProduct } from "../controllers/productController.js";
+import { createProduct, deleteProduct, editProduct, getAllProducts, getPorpularProducts, getProduct } from "../controllers/productController.js";
 import { verifyTokenAndAdmin } from "../middleware/authMiddleware.js";
 
 
@@ -10,7 +10,8 @@ router.post('/', verifyTokenAndAdmin, createProduct)
 router.put('/edit/:id', verifyTokenAndAdmin, editProduct)
 router.delete('/delete/:id', deleteProduct)
 router.get('/find/:id', getProduct)
-router.get('/findAll', getAllProducts)
+router.get('/', getAllProducts)
+router.get('/porpular', getPorpularProducts)
 
 
 export default router

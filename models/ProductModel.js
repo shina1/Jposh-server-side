@@ -14,7 +14,7 @@ const ProductSchema = Schema(
            required: true,
        },
        img: {type: String, required: true,},
-       categories: {type: Array, required: true},
+       category: {type: String, required: true},
        size: {type: Array},
        color: {type: Array},
        price: {type: Number, required: true},
