@@ -4,6 +4,7 @@ import User from "../models/UserModel.js";
 // import { registerUser } from "../controllers/userController.js";
 
 const notAuthorized = 'Not authorized, invalid token';
+
 const shield = asyncHandler(async(req, res, next) =>{
     let token
     
@@ -13,6 +14,7 @@ const shield = asyncHandler(async(req, res, next) =>{
             token = req.headers.authorization.split(' ')[1]
     
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            
             req.user = await User.findById(decoded.id).select('-password')
              next()
         } catch (error) {

@@ -4,7 +4,7 @@ import { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } from ".
 
 const router = express.Router()
 
-router.post('/', verifyToken, addOrderItems)
+router.post('/', addOrderItems)
 router.put("/update/:id", verifyTokenAndAdmin, updateOrder)
 router.delete("/delete/:id", verifyTokenAndAdmin, deleteOrder)
 router.get("/userorder/:userId", verifyTokenAndAuthorization

@@ -1,6 +1,7 @@
 import express from "express";
 import connectDB from "./connect/db.js";
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
+import {} from 'dotenv/config'
 import cors from "cors";
 import usersRoutes from "./routes/user.js"
 import auth from "./routes/auth.js"
@@ -10,7 +11,7 @@ import orderRoute from "./routes/orderRoutes.js"
 import paymentRoute from "./routes/paymentRoute.js"
 
 
-dotenv.config();
+// dotenv.config();
 
 const app = express()
 
