@@ -35,11 +35,20 @@ const registerUser = async(req, res) => {
 }
 
 // LOGIN
-const loginUser = async(req, res) => {
-    try {
+const loginUser = asyncHandler(async(req, res) => {
+   
         const {email, password} = req.body
+        let passwordCheck
         const user = await User.findOne({email})
-        if(user && (await user.matchPassword(password))){
+        console.log(user);
+        if(user){
+            passwordCheck = await user.matchPassword(password)
+            console.log('user pasword',user.password)
+            console.log(email, password);
+        }
+         
+        
+        if(user && passwordCheck !== null && passwordCheck !== undefined){
             return res.status(200).json({
                 _id: user._id,
                 name: user.name,
@@ -48,11 +57,9 @@ const loginUser = async(req, res) => {
                 token: generateToken(user._id, user.isAdmin)
             })
         }
-        res.status(401).json('Wrong credentials')
-    } catch (error) {
-        res.status(500).json(error)
-    }
-}
+        res.status(500).json('Wrong credentials')
+    
+})
 
 
 // UPDATE USER

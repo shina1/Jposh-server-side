@@ -1,6 +1,6 @@
 import express from "express";
-import { createProduct, deleteProduct, editProduct, getAllProducts, getPorpularProducts, getProduct } from "../controllers/productController.js";
-import { verifyTokenAndAdmin } from "../middleware/authMiddleware.js";
+import { createProduct, deleteProduct, editProduct, getAllProducts, getPorpularProducts, getProduct, createProductReview, getTopProducts } from "../controllers/productController.js";
+import { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } from "../middleware/authMiddleware.js";
 
 
 
@@ -12,6 +12,8 @@ router.delete('/delete/:id', deleteProduct)
 router.get('/find/:id', getProduct)
 router.get('/', getAllProducts)
 router.get('/porpular', getPorpularProducts)
+router.post('/:id/reviews', verifyTokenAndAuthorization, createProductReview)
+router.get('/top', getTopProducts)
 
 
 export default router

@@ -30,12 +30,6 @@ const userSchema = Schema(
             type: String,
             required: true,
             minlength: 5,
-            validator(value) {
-                if(!validator.match(/\d/) || !value.match(/[a-zA-Z]/)){
-                    throw new Error("Password must contain at least one letter and one number ");
-                }
-            },
-            
         },
         isAdmin: {
             type: Boolean,
@@ -51,7 +45,7 @@ const userSchema = Schema(
 userSchema.statics.isEmailTaken - async function(email, excludeUserId) {
     const user = await this.findOne({ email, _id: {$ne: excludeUserId } });
     return !!user;
-}
+};
 
 
 
@@ -59,24 +53,23 @@ userSchema.statics.isEmailTaken - async function(email, excludeUserId) {
 // userSchema.plugin(toJSON);
 userSchema.plugin(paginate);
 
-/**
- * Check if password matches the user's password
- * @param {string} password
- * @returns {Promise<boolean>}
- */
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password)
-}
 
 userSchema.pre('save', async function(next) {
     const user = this;
     if(!user.isModified('password')){
         next()
     }
-    const salt = await bcrypt.genSalt(12)
+    const salt = await bcrypt.genSalt(10)
 
     user.password = await bcrypt.hash(user.password, salt)
-})
+    next()
+});
+
+userSchema.methods.matchPassword = async function (enteredPassword)  {
+    return await bcrypt.compare(enteredPassword, this.password)
+};
+
+
 
 
 const User = mongoose.model("User", userSchema);
