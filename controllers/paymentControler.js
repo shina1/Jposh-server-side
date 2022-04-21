@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import User from "../models/UserModel.js";
 
 const idempotencyKey = uuidv4();
-const stripe = new Stripe(`${process.env.STRIPE_TEST_KEY}`)
+const stripe = new Stripe(`${process.env.STRIPE_KEY}`)
 
 
 const stripePayment = async(req, res) => {
