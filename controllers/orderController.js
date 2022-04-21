@@ -8,7 +8,6 @@ import Order from "../models/OrderModel.js"
 
 const addOrderItems = asyncHandler(async(req, res) => {
     const {taxPrice, totalPrice, shippingPrice, orderItems, shippingAddress, paymentMethod } = req.body
-    console.log(req.user);
     if(orderItems && orderItems.length === 0){
         throw new Error('Your cart is empty')
     }else{
@@ -87,13 +86,17 @@ const getUserOrder = async(req, res) => {
 //  @route Post/api/v1/orders/update/${id}
 // @access Private/Admin
 const getAllOrder = async(req, res) => {
+    const query = req.query.new;
     try {
-        const allOrders = await Order.find({}).populate('user', 'id name')
+        const allOrders =   query ? await Order.find({}).populate('user', 'id name').sort({_id : -1}).limit(5) : await Order.find({}).populate('user', 'id name')
         res.status(200).json(allOrders)
     } catch (error) {
         res.status(500).json(error)
     }
 }
+
+
+
 // STATS
 // @desc Get Monthly Income
 //  @route Post/api/v1/orders/update/${id}
@@ -105,7 +108,9 @@ const getMonthlyIncome = async(req, res) => {
     const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
     try {
         const income = await Order.aggregate([
-            { $match: {createdAt : { $gte: previousMonth}}},
+            { $match: {
+                createdAt : { $gte: previousMonth},}
+        },
             {
                 $project : {
                     month : {$month: "$createdAt"},
@@ -139,7 +144,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
         id: req.body.id,
         status: req.body.status,
         update_time: req.body.update_time,
-        email_address: req.body.payer.email_address,
+        // email_address: req.body.payer.email_address,
       }
   
       const updatedOrder = await order.save()
@@ -180,7 +185,8 @@ export {
     getOrderById,
     getMonthlyIncome,
     updateOrderToPaid,
-    updateOrderToDelivered
+    updateOrderToDelivered,
+    // getAllNewOrder
 }
 
 

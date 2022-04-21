@@ -5,15 +5,17 @@ import { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } from ".
 const router = express.Router()
 
 router.post('/', verifyToken, addOrderItems)
-router.put("/update/:id", verifyTokenAndAdmin, updateOrder)
-router.delete("/delete/:id", verifyTokenAndAdmin, deleteOrder)
+router.put("/update/:id", verifyToken, updateOrder)
+router.delete("/delete/:id", verifyToken, deleteOrder)
 router.get("/userorder/:userId", verifyTokenAndAuthorization
 , getUserOrder)
-router.get("/findall", verifyTokenAndAdmin, getAllOrder)
-router.get("/income", verifyTokenAndAdmin, getMonthlyIncome)
+router.get("/findall", verifyToken, getAllOrder)
+router.get("/income", verifyToken, getMonthlyIncome)
 router.get('/:id', verifyToken, getOrderById )
-router.put('/:id/deliver', verifyTokenAndAdmin, updateOrderToDelivered)
-router.put('/:id/pay', verifyTokenAndAdmin, updateOrderToPaid)
+// router.get('/neworders', verifyToken, getAllNewOrder)
+router.put('/:id/deliver', verifyToken, updateOrderToDelivered)
+router.put('/:id/pay', verifyToken, updateOrderToPaid)
+
 
 
 

@@ -15,7 +15,7 @@ const stripePayment = async(req, res) => {
       source: stripeToken.id,
   }).then(customer => {
     stripe.charges.create({
-      amount: amount,
+      amount: amount * 100,
       currency: "gbp",
       customer: customer.id,
       receipt_email: stripeToken.email,
@@ -29,16 +29,14 @@ const stripePayment = async(req, res) => {
       }
     }, {idempotencyKey})
   }).then(result => {
-    if(result){
+    
       res.status(200).json(result)
-    }
-    else{
-      console.log('something went wrong');
-    }
     
   }
     )
-  .catch(err => {throw new Error(err)})
+  .catch(err => {
+    throw new Error(err)
+  })
 }
 
 

@@ -2,7 +2,9 @@ import Products from "../models/ProductModel.js"
 import asyncHandler from 'express-async-handler'
 
 
-// create a product
+// @desc    Create a product
+// @route   POST /api/products
+// @access  Private/Admin
 const createProduct = async(req, res) => {
     const newProduct = new Products(req.body)
 try {
@@ -13,6 +15,27 @@ try {
     res.status(500).json(error)
 }
 }
+
+// @desc    Create a product
+// @route   POST /api/products
+// @access  Private/Admin
+// const createProduct = asyncHandler(async (req, res) => {
+//     const product = new Products({
+//       title: 'Sample name',
+//       price: 0,
+//       user: req.user._id,
+//       img: '/images/sample.jpg',
+//       desc: "sample desc",
+//       color: [],
+//       size: [],
+//       category: 'Sample category',
+//       countInStock: 0,
+//       numReviews: 0,
+//     })
+  
+//     const createdProduct = await product.save()
+//     res.status(201).json(createdProduct)
+//   })
 
 // Edit a product
 
@@ -31,15 +54,30 @@ const editProduct = asyncHandler(
 
 // delete a product
 
-const deleteProduct = async(req, res) => {
-    try {
-        await Products.findByIdAndDelete(req.params.id)
-        res.status(200).send('Product has been deleted!')
+// const deleteProduct = async(req, res) => {
+//     try {
+//         await Products.findByIdAndDelete(req.params.id)
+//         res.status(200).send('Product has been deleted!')
         
-    } catch (error) {
-        res.status(500).json(error)
+//     } catch (error) {
+//         res.status(500).json(error)
+//     }
+// }
+
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
+// @access  Private/Admin
+const deleteProduct = asyncHandler(async (req, res) => {
+    const product = await Products.findById(req.params.id)
+  
+    if (product) {
+      await product.remove()
+      res.json({ message: 'Product removed' })
+    } else {
+      res.status(404)
+      throw new Error('Product not found')
     }
-}
+  })
 
 // GET single product
 const getProduct = async(req, res) => {

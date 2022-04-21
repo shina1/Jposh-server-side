@@ -107,7 +107,7 @@ try {
 const getAllUsers = async(req, res) => {
     const query = req.query.new;
     try {
-        const users = query ? await User.find().sort({_id : -1}).limit(10) : await User.find()
+        const users = query ? await User.find().sort({_id : -1}).limit(5) : await User.find()
 
         if(users) {
             return res.status(200).json(users)
@@ -139,8 +139,13 @@ const userStats = async(req, res) => {
                     _id: "$month",
                     total: {$sum: 1}
                 }
-            }
-        ]);
+            },
+            
+        ])
+
+        // db.articles.aggregate(
+        //     { $limit : 5 }
+        // );
 
         res.status(200).json(userStatsData)
     } catch (error) {
