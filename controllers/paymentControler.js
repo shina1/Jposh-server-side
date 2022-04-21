@@ -1,61 +1,48 @@
 import Stripe from "stripe";
+import { v4 as uuidv4 } from 'uuid';
+
 import User from "../models/UserModel.js";
 
+const idempotencyKey = uuidv4();
 const stripe = new Stripe(`${process.env.STRIPE_TEST_KEY}`)
 
+
 const stripePayment = async(req, res) => {
-  console.log(req.body);  
-   try {
-   await stripe.charges.create({
-      source: req.body.tokenId,
-      amount: req.body.amount,
+  const {headers, stripeToken, amount, product} = req.body
+  
+  return stripe.customers.create({
+      email: stripeToken.email,
+      source: stripeToken.id,
+  }).then(customer => {
+    stripe.charges.create({
+      amount: amount * 100,
       currency: "gbp",
-   },(stripeErr, stripeRes) => {
-     if(stripeErr){ 
-       return res.status(500).json(stripeErr)
-     }
-     return res.status(200).json(stripeRes)
- })
-} catch (error) {
-   res.status(500).json(error)
+      customer: customer.id,
+      receipt_email: stripeToken.email,
+      description: `Purchase of product successful`,
+      shipping: {
+        name: stripeToken.card.name,
+        address: {
+          city: stripeToken.card.address_city,
+          country: stripeToken.card.address_city
+        }
+      }
+    }, {idempotencyKey})
+  }).then(result => {
+    
+      res.status(200).json(result)
+    
+  }
+    )
+  .catch(err => {
+    throw new Error(err)
+  })
 }
-}
+
+
 
 
 export{
     stripePayment
 }
 
-
-// const session = await stripe.checkout.sessions.create({
-//   payment_method_types: ['card'],
-//   line_items: [{
-//     price_data: {
-//       product: '{{PRODUCT_ID}}',
-//       unit_amount: 1500,
-//       currency: 'usd',
-//     },
-//     quantity: 1,
-//   }],
-//   mode: 'payment',
-//   success_url: 'https://example.com/success',
-//   cancel_url: 'https://example.com/cancel',
-// });
-
-
-// try {
-//   console.log(req.body.tokenId.id)
-//    await stripe.charges.create({
-  // source: req.body.tokenId.id,
-  // amount: req.body.amount,
-  // currency: "gbp",
-//    },(stripeErr, stripeRes) => {
-//      if(stripeErr){ 
-//        // console.log('the stripe error',stripeErr);
-//        return res.status(500).json(stripeErr)
-//      }
-//      return res.status(200).json(stripeRes)
-//  })
-// } catch (error) {
-//    res.status(500).json(error)
-// }
