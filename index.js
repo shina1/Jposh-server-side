@@ -9,6 +9,7 @@ import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
 import orderRoute from "./routes/orderRoutes.js"
 import paymentRoute from "./routes/paymentRoute.js"
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 
 // dotenv.config();
@@ -36,7 +37,8 @@ app.use("/api/v1/order", orderRoute);
 
 app.use('/api/v1/checkout', paymentRoute);
 
- 
+app.use(notFound)
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT || 2600;
