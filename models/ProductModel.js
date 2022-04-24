@@ -45,7 +45,7 @@ const ProductSchema = Schema(
        size: {type: Array},
        color: {type: Array},
        price: {type: Number, required: true},
-       discoutPrice: {type: Number,},
+       discoutPrice: {type: Number},
        inStock: {type: Boolean, default: true},
        countInStock: {
         type: Number,
