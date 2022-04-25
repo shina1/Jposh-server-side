@@ -40,6 +40,8 @@ const ProductSchema = Schema(
            required: true,
        },
        img: {type: String, required: true,},
+       frontImg: {type: String,},
+       backImg: {type: String,},
        video: {type: String, required: false},
        category: {type: String, required: true},
        size: {type: Array},
