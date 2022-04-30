@@ -6,7 +6,6 @@ import User from "../models/UserModel.js";
 const idempotencyKey = uuidv4();
 const stripe = new Stripe(`${process.env.STRIPE_KEY}`)
 
-
 const stripePayment = async(req, res) => {
   const {headers, stripeToken, amount, product} = req.body
   
@@ -38,6 +37,30 @@ const stripePayment = async(req, res) => {
     throw new Error(err)
   })
 }
+
+
+// const stripePayment = async(req, res) => {
+//   const {headers, stripeToken, amount, product, customerId} = req.body
+  
+   
+
+//     const paymentIntent = await stripe.paymentIntents.create({
+//         amount: amount * 100,
+//         currency: "gbp",
+//         customer: customerId,
+//     });
+
+//     return res.json({
+//         checkoutSecret: paymentIntent.client_secret,
+//         product,
+//     });
+
+  
+// }
+
+
+
+
 
 
 
