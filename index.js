@@ -16,9 +16,11 @@ import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const app = express();
 
-app.use(cors({
-  origin: '*'
-}));
+// app.use(cors({
+//   origin: '*'
+// }));
+
+app.use(cors())
 app.use(express.json());
 connectDB();
 // user endpoints
@@ -43,7 +45,7 @@ app.use(notFound)
 app.use(errorHandler)
 
 
-const PORT = process.env.PORT || 2600;
+const PORT = process.env.PORT ||  5500;
 
 const server = app.listen(
     PORT,
