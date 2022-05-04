@@ -7,7 +7,7 @@ const router = express.Router()
 router.post('/', verifyToken, addOrderItems)
 router.put("/update/:id", verifyToken, updateOrder)
 router.delete("/delete/:id", verifyToken, deleteOrder)
-router.get("/userorder/:userId", verifyTokenAndAuthorization
+router.get("/userorder/:userId", verifyToken
 , getUserOrder)
 router.get("/findall", verifyToken, getAllOrder)
 router.get("/income", verifyToken, getMonthlyIncome)

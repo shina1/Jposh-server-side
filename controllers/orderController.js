@@ -75,7 +75,7 @@ const deleteOrder = asyncHandler(async(req, res) => {
 
 const getUserOrder = async(req, res) => {
     try {
-        const userOrders = await Order.find({userId: req.params.userId})
+        const userOrders = await Order.find({userId: req.params.userId}).sort({_id : -1})
         res.status(200).json(userOrders)
     } catch (error) {
         res.status(500).json(error)
@@ -168,7 +168,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   
       const updatedOrder = await order.save()
   
-      res.json(updatedOrder)
+      return res.json(updatedOrder)
     } else {
       res.status(404)
       throw new Error('Order not found')
