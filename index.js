@@ -44,12 +44,13 @@ app.use('/api/v1/checkout', paymentRoute);
 app.use(notFound)
 app.use(errorHandler)
 
-
-// const PORT = process.env.PORT ||  5500;
-const PORT = 5500
+const HOST = '0.0.0.0';
+const PORT = process.env.PORT ||  5500;
+// const PORT = 5500
 
 const server = app.listen(
     PORT,
+    HOST,
     console.log(
       `server running on port ${PORT}`
     )
