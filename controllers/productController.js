@@ -1,5 +1,6 @@
 import Products from "../models/ProductModel.js"
 import asyncHandler from 'express-async-handler'
+import Product from "../models/ProductModel.js"
 
 
 // @desc    Create a product
@@ -37,20 +38,61 @@ try {
 //     res.status(201).json(createdProduct)
 //   })
 
-// Edit a product
+// @desc    Edit a product
+// @route   PUT /api/products
+// @access  Private/Admin
 
 const editProduct = asyncHandler(
     async(req, res) => {
         
-    const editedProduct = await Products.findByIdAndUpdate(
-                req.params.id, 
-                {$set: req.body}, 
-                {new: true}
-            );
-    res.status(200).json(editedProduct)
+    // const editedProduct = await Products.findByIdAndUpdate(
+    //             req.params.id, 
+    //             {$set: req.body}, 
+    //             {new: true}
+    //         );
+    // res.status(200).json(editedProduct)
+    const product = await Product.findById(req.params.id);
+
+    if(product){
+        product.title = req.body.title || product.title
+        product.desc = req.body.desc || product.desc
+        product.img = req.body.img || product.img
+        product.frontImg = req.body.frontImg || product.frontImg
+        product.backImg = req.body.backImg || product.backImg
+        product.video = req.body.video || product.video
+        product.category = req.body.category || product.category
+        product.size = req.body.size || product.size
+        product.color = req.body.color || product.color
+        product.price = req.body.price || product.price
+        product.discoutPrice = req.body.discoutPrice || product.discoutPrice
+        product.inStock = req.body.inStock || product.inStock
+        product.countInStock = req.body.countInStock || product.countInStock
+        product.discount = req.body.discount || product.discount
+        product.reviews = req.body.reviews || product.reviews
+        product.avgRating = req.body.avgRating || product.avgRating
+        product.numReviews = req.body.numReviews || product.numReviews
+
+        const updatedProduct = await product.save();
+
+        res.status(200).json({
+            status: "Success",
+            message: "Product updated succefully",
+            data:{
+                _id: updatedProduct._id,
+                ...updatedProduct
+            }
+        })
+    }else{
+                res.status(404).json({
+                    status:"failed",
+                    message: "product not found"
+                })
+                throw new Error("Product not found")
+            }
         
     }
 )
+
 
 // delete a product
 

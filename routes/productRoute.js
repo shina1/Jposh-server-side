@@ -12,7 +12,7 @@ router.delete('/delete/:id', deleteProduct)
 router.get('/find/:id', getProduct)
 router.get('/', getAllProducts)
 router.get('/porpular', getPorpularProducts)
-router.post('/:id/reviews', verifyTokenAndAuthorization, createProductReview)
+router.post('/:id/reviews', verifyToken, createProductReview)
 router.get('/top', getTopProducts)
 
 
