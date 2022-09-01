@@ -140,7 +140,9 @@ const getProduct = async(req, res) => {
     }
     }
 
-    // GET ALL USERS
+// @desc    GET all products
+// @route   GET /api/products/
+// @access  Public
 
 const getAllProducts = async(req, res) => {
     const queryNew = req.query.new;
@@ -152,7 +154,7 @@ const getAllProducts = async(req, res) => {
         }else if(queryCat){
             products = await Products.find({
                 category : {
-                    $eq:  queryCat ,
+                    $eq:  queryCat,
                 },
             })
         }else{
@@ -169,7 +171,9 @@ const getAllProducts = async(req, res) => {
     }
 }
 
-// GET PORPULAR PRODUCTS
+// @desc    Get porpular products
+// @route   GET /api/products/
+// @access  Public
 const getPorpularProducts = async(req, res) => {
     try {
         const porpularProducts = await Products.find().sort({ createdAt: -1}).limit(6);
