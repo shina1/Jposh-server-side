@@ -20,7 +20,9 @@ const app = express();
 //   origin: '*'
 // }));
 
-app.use(cors())
+// enable cors
+app.use(cors());
+app.options('*', cors());
 app.use(express.json());
 connectDB();
 // user endpoints
