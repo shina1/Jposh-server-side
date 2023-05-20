@@ -49,15 +49,11 @@ app.use("/api/v1/blog", blogRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const HOST = "0.0.0.0";
+// const HOST = "0.0.0.0";
 const PORT = process.env.PORT || 8080;
 // const PORT = 5500
 
-const server = app.listen(
-  PORT,
-  HOST,
-  console.log(`server running on port ${PORT}`)
-);
+const server = app.listen(PORT, console.log(`server running on port ${PORT}`));
 
 process.on("unhandledRejection", (err) => {
   console.log("UNHANDLED REJECTION! shutting down...");
