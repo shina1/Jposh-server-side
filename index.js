@@ -9,6 +9,7 @@ import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
 import orderRoute from "./routes/orderRoutes.js"
 import paymentRoute from "./routes/paymentRoute.js"
+import blogRoutes from './routes/blogRoutes.js'
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 
@@ -43,11 +44,14 @@ app.use("/api/v1/order", orderRoute);
 
 app.use('/api/v1/checkout', paymentRoute);
 
+// blog endoint
+app.use('/api/v1/blog', blogRoutes);
+
 app.use(notFound)
 app.use(errorHandler)
 
 const HOST = '0.0.0.0';
-const PORT = process.env.PORT ||  5500;
+const PORT = process.env.PORT ||  8080;
 // const PORT = 5500
 
 const server = app.listen(
