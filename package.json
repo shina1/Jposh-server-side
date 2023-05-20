@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "server side ecommerce application for jposh clothing store",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon -r esm index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +26,7 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "express-validator": "^6.15.0",
